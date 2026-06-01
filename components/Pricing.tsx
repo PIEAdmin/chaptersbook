@@ -5,8 +5,25 @@ interface PricingProps { onSelect: (tier: string) => void; }
 
 type Billing = 'once' | 'monthly' | 'annual';
 
+const STRIPE_LINKS: Record<string, string> = {
+  single:  'https://buy.stripe.com/4gM4gy1yf9ub3quch36Na0g',
+  polish:  'https://buy.stripe.com/5kQ7sK0ub5dVgdg0yl6Na0h',
+  family:  'https://buy.stripe.com/5kQ14mgt935Nf9cch36Na0i',
+  annual:  'https://buy.stripe.com/bJecN4ccTayf9OSdl76Na0j',
+  teams:   'https://buy.stripe.com/00w9AS0ubayff9c3Kx6Na0k',
+};
+
 const Pricing: React.FC<PricingProps> = ({ onSelect }) => {
   const [billing, setBilling] = useState<Billing>('once');
+
+  const handleCTA = (id: string) => {
+    if (id === 'teams') {
+      window.location.href = 'mailto:hello@chaptersbook.com?subject=Teams%20%26%20Enterprise%20Inquiry';
+    } else {
+      window.open(STRIPE_LINKS[id], '_blank');
+    }
+    onSelect(id);
+  };
 
   const tiers = [
     {
@@ -209,7 +226,7 @@ const Pricing: React.FC<PricingProps> = ({ onSelect }) => {
               </ul>
 
               <button
-                onClick={() => onSelect(t.id)}
+                onClick={() => handleCTA(t.id)}
                 className={`w-full px-6 py-3.5 rounded-full font-semibold transition-all ${t.ctaClass}`}
               >
                 {t.cta}
