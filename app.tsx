@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PressBar from './components/PressBar';
 import SocialProofBar from './components/SocialProofBar';
+import Occasions from './components/Occasions';
 import HowItWorks from './components/HowItWorks';
 import TwoModes from './components/TwoModes';
 import Workflows from './components/Workflows';
@@ -31,6 +32,11 @@ import TermsOfService from './components/TermsOfService';
 const STRIPE_LINKS: Record<string, string> = {
   standard: 'https://buy.stripe.com/5kQ7sF5C4cgO7MmcYpejK0h',
   premium:  'https://buy.stripe.com/bJe00d2pS0y6giS7E5ejK0i',
+  // New tiers — will be replaced with live Stripe links once created
+  single:   'https://buy.stripe.com/5kQ7sF5C4cgO7MmcYpejK0h',
+  polish:   'https://buy.stripe.com/5kQ7sF5C4cgO7MmcYpejK0h',
+  family:   'https://buy.stripe.com/5kQ7sF5C4cgO7MmcYpejK0h',
+  annual:   'https://buy.stripe.com/bJe00d2pS0y6giS7E5ejK0i',
 };
 
 const AppLayout: React.FC = () => {
@@ -43,16 +49,14 @@ const AppLayout: React.FC = () => {
   const closeModal = () => setModal(m => ({ ...m, open: false }));
 
   const handlePricingSelect = (tier: string) => {
-    if (tier === 'free') {
-      toast.success("Free plan — let's create your book!");
-      setTimeout(openSolo, 600);
+    if (tier === 'teams') {
+      window.location.href = 'mailto:hello@chaptersbook.com?subject=Teams%20%2F%20Enterprise%20Enquiry';
       return;
     }
     const link = STRIPE_LINKS[tier];
     if (link && !link.includes('placeholder')) {
       window.location.href = link;
     } else {
-      // Demo mode — open book creator with toast
       const name = tier.charAt(0).toUpperCase() + tier.slice(1);
       toast.success(`${name} plan selected — redirecting to checkout…`);
       setTimeout(openSolo, 800);
@@ -65,17 +69,22 @@ const AppLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#FAF7F2] text-[#0F1B2D]">
 
-      {/* Urgency banner (top) */}
+      {/* Urgency banner */}
       <UrgencyBanner />
 
       <Navbar onGetStarted={openSolo} />
-      <Hero onStartSolo={openSolo} onStartGroup={openGroup} />
+      <Hero onStartSolo={openSolo} onStartGroup={openGroup} onUpload={openSolo} />
 
       {/* Trust & authority */}
       <PressBar />
       <SocialProofBar />
 
+      {/* Occasions — new section */}
+      <Occasions />
+
+      {/* How it works — with AI vs Upload toggle */}
       <HowItWorks />
+
       <TwoModes onStartSolo={openSolo} onStartGroup={openGroup} />
       <Workflows />
       <QuestionTree />
@@ -88,10 +97,12 @@ const AppLayout: React.FC = () => {
       <Formats />
       <ProblemSolution />
 
-      {/* SEO — FAQ with JSON-LD */}
+      {/* FAQ */}
       <FAQ />
 
       <Dashboard onCreate={openSolo} />
+
+      {/* Pricing — rebuilt with 5 tiers */}
       <Pricing onSelect={handlePricingSelect} />
 
       {/* Email capture */}
@@ -103,10 +114,10 @@ const AppLayout: React.FC = () => {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-[#D4A847]/10 rounded-full blur-3xl" />
         <div className="relative max-w-3xl mx-auto px-6 lg:px-8 text-center">
           <h2 className="font-display text-4xl md:text-6xl font-bold leading-tight mb-6">
-            Every story <span className="italic text-[#D4A847]">deserves</span> a beautiful book.
+            Every milestone deserves <span className="italic text-[#D4A847]">a story</span>.
           </h2>
           <p className="text-lg text-[#FAF7F2]/70 mb-10 max-w-xl mx-auto">
-            Start free today. Pay only when you download. Keep your story forever.
+            Retirement. Baby shower. Pastor's anniversary. Birthday. Work milestone. Start free — pay only when you download.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <button
@@ -123,7 +134,9 @@ const AppLayout: React.FC = () => {
               Create a Group Book
             </button>
           </div>
-          <p className="mt-6 text-sm text-[#FAF7F2]/40">ChaptersBook.com · Free to start · 30-day money-back guarantee</p>
+          <p className="mt-6 text-sm text-[#FAF7F2]/40">
+            ChaptersBook.com · Free to preview · $9.99 to download · 30-day money-back guarantee
+          </p>
         </div>
       </section>
 

@@ -12,52 +12,52 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
   {
-    quote: "I gave my grandma a book of stories about her life for her 80th birthday. She cried. I cried. Everyone cried. Chapters made something I could never have written on my own.",
-    name: "Maria T.",
-    role: "Granddaughter, Ohio",
-    avatar: "MT",
+    quote: "My husband just retired after 31 years. I used Chapters to collect stories from 24 colleagues. The book made the whole room cry — including him. I'll never forget that moment.",
+    name: "Patricia H.",
+    role: "Wife & Organiser, Atlanta",
+    avatar: "PH",
     stars: 5,
-    tag: "Solo Book",
+    tag: "Retirement Gift",
   },
   {
-    quote: "Our whole team contributed memories about our colleague who retired after 30 years. The AI stitched it into a proper narrative — it felt like a real book, not a slideshow.",
-    name: "James K.",
-    role: "Manager, London",
-    avatar: "JK",
+    quote: "I made a pregnancy journey book for my sister's baby shower. She didn't know what it was until she opened it and started reading. The whole table went silent. Best gift I've ever given.",
+    name: "Deja M.",
+    role: "Sister, Chicago",
+    avatar: "DM",
     stars: 5,
-    tag: "Group Book",
+    tag: "Baby Shower",
   },
   {
-    quote: "I wrote a story for my daughter about the year she was born. The warm tone option made it sound exactly how I imagined — gentle and timeless. She'll read it to her kids one day.",
-    name: "Priya S.",
-    role: "New mom, San Francisco",
-    avatar: "PS",
+    quote: "Our congregation surprised our pastor on his 20th anniversary with a book from 60 members. Each person contributed a story. The AI wove it into one beautiful narrative. He still reads from it on Sundays.",
+    name: "Elder James R.",
+    role: "Church Elder, Houston",
+    avatar: "JR",
     stars: 5,
-    tag: "Solo Book",
+    tag: "Pastor's Anniversary",
   },
   {
-    quote: "As a teacher, I had my students each contribute a chapter about what they learned this year. Parents were blown away at graduation. We're doing it every year from now on.",
-    name: "Ms. Chen",
-    role: "5th Grade Teacher, Austin",
-    avatar: "MC",
+    quote: "As an HR director, I was looking for something beyond a card. We now create a Chapters book for every 10-year work anniversary. The employees love it. It's become part of our culture.",
+    name: "Renata O.",
+    role: "HR Director, Fortune 500",
+    avatar: "RO",
     stars: 5,
-    tag: "Group Book",
+    tag: "Corporate Gift",
   },
   {
-    quote: "I was skeptical AI could do this well. I was very wrong. The questions it asked were thoughtful, and the draft it produced needed almost no editing. Absolutely worth it.",
-    name: "David R.",
-    role: "Author & Dad, New York",
-    avatar: "DR",
+    quote: "I had 40 pages of rough notes about my grandmother's life. Chapters polished it into the most beautiful tribute book. My family ordered 12 printed copies for Christmas gifts.",
+    name: "Marcus L.",
+    role: "Grandson, New Orleans",
+    avatar: "ML",
     stars: 5,
-    tag: "Solo Book",
+    tag: "Upload & Polish",
   },
   {
-    quote: "Created a memorial book for my dad with stories from 14 family members across 4 countries. Chapters handled everything. It arrived printed just in time for the anniversary.",
-    name: "Keiko N.",
-    role: "Daughter, Tokyo",
-    avatar: "KN",
+    quote: "Our school uses Chapters at the end of every year. Each class creates a book together — students contribute stories, the AI ties them together. Parents at graduation are blown away every time.",
+    name: "Principal Chen",
+    role: "Elementary School, Austin",
+    avatar: "PC",
     stars: 5,
-    tag: "Group Book",
+    tag: "School Use",
   },
 ];
 
@@ -67,7 +67,7 @@ const Testimonials: React.FC = () => {
 
   useEffect(() => {
     if (!autoplay) return;
-    const t = setTimeout(() => setActive(a => (a + 1) % testimonials.length), 5000);
+    const t = setTimeout(() => setActive(a => (a + 1) % testimonials.length), 5500);
     return () => clearTimeout(t);
   }, [active, autoplay]);
 
@@ -85,8 +85,9 @@ const Testimonials: React.FC = () => {
         <div className="text-center mb-16">
           <div className="text-sm font-semibold text-[#D4A847] uppercase tracking-[0.2em] mb-3">Stories about stories</div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-[#FAF7F2] leading-tight">
-            Readers. Writers. <span className="italic text-[#D4A847]">Believers.</span>
+            Real people. Real <span className="italic text-[#D4A847]">moments.</span>
           </h2>
+          <p className="mt-4 text-[#FAF7F2]/50 text-lg">From retirement parties to baby showers, churches to corporations.</p>
         </div>
 
         {/* Card */}

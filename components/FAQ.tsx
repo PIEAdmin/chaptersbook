@@ -1,57 +1,57 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 
-interface FAQItem {
-  q: string;
-  a: string;
-}
+interface FAQItem { q: string; a: string; }
 
 const faqs: FAQItem[] = [
   {
-    q: "How do I create a personalized story book with AI?",
-    a: "Just click 'Start My Book', choose your recipient (a child, grandchild, teacher, or future self), and answer a few guided questions about your story. ChaptersBook's AI ghostwriter crafts a full, print-ready narrative in under 90 seconds — no writing skills needed.",
+    q: "What kinds of books can I create with Chapters?",
+    a: "Chapters is built for any life milestone — retirement tributes, baby shower gifts, pregnancy journey books, pastor's anniversaries, work anniversaries, birthdays, memorial tributes, family histories, school yearbooks, corporate onboarding books, and more. If it's a moment worth remembering, Chapters can help you tell that story.",
   },
   {
-    q: "Can multiple people contribute to one book?",
-    a: "Yes — that's exactly what Group Mode is for. You create a book, invite contributors via email, and each person answers their own set of questions. The AI weaves all contributions into a single cohesive narrative with chapters. Perfect for retirement gifts, class memory books, and family histories.",
+    q: "Can I upload a draft I already wrote?",
+    a: "Yes! The Upload & Polish plan is made exactly for this. Upload your Word doc, Google Doc, PDF, or plain text. Our AI reads your draft, polishes the prose, organises it into chapters, applies beautiful formatting, and delivers a professional-quality book — all while keeping your words and voice intact.",
   },
   {
-    q: "What makes ChaptersBook different from other book creators?",
-    a: "Most tools give you a blank canvas and a template. Chapters gives you an AI co-author. Instead of figuring out what to write, you answer thoughtful, story-specific questions — and Chapters writes the book for you. The result reads like a real book, not a fill-in-the-blank card.",
+    q: "How does the AI writing work?",
+    a: "You answer a set of guided questions tailored to your occasion and recipient. The AI uses your answers to ghostwrite a full, print-ready narrative in under 90 seconds. Every book is uniquely personalised — it reads like a real book written by someone who knows the person deeply.",
   },
   {
-    q: "What file formats will I get?",
-    a: "Depending on your plan, you'll receive a PDF (all plans), a Microsoft Word .docx for editing (Standard+), or a KDP-ready .epub/.mobi and print-ready files with bleed margins (Premium). We also integrate with print-on-demand partners so you can order a physical hardcover or softcover.",
+    q: "Can multiple people contribute stories to one book?",
+    a: "Yes — Group Mode lets you invite contributors via email. Each person answers their own guided questions or shares their memories. The AI weaves all contributions into one cohesive narrative with named chapters. Perfect for retirement parties, pastor's anniversaries, memorial books, and class yearbooks.",
   },
   {
-    q: "Can I edit the book after the AI generates it?",
-    a: "Absolutely. After generation you get a full inline editor — chapter by chapter, sentence by sentence. You can rewrite, add sections, change the tone, or simply leave it as-is. The AI draft is your starting point, not your ceiling.",
+    q: "What is the Teams & Enterprise plan for?",
+    a: "Companies, schools, and churches use Chapters for bulk book creation. Think: employee of the month tributes, staff retirement books, faculty appreciation gifts, student achievement stories, new hire welcome books, and annual class memory books. The Teams plan includes an admin dashboard, branded templates, shared workspace, and dedicated support. Custom invoicing is available.",
   },
   {
-    q: "Is my story private and secure?",
-    a: "Yes. Your answers and the generated book are private to your account. We don't use your personal stories to train AI models, and we never share your data with third parties. You own your story — completely.",
+    q: "What formats will I receive?",
+    a: "All plans include PDF download. Family and Annual plans add Word (.docx), ePub, and print-ready bleed margin files. Annual plan includes KDP export for Amazon self-publishing. Teams plan includes custom branded exports.",
   },
   {
-    q: "How long does it take to make a book?",
-    a: "Most people complete the question flow in 5–10 minutes. The AI generates the full manuscript in under 90 seconds. From first click to downloadable PDF, you're typically done in under 15 minutes.",
+    q: "Can I edit the book after generation?",
+    a: "Absolutely. You get a full inline editor — chapter by chapter, sentence by sentence. Rewrite sections, adjust the tone, add photos, or leave it as-is. The AI draft is your starting point, not your ceiling.",
   },
   {
-    q: "What's the best gift book to create for a child?",
-    a: "The most popular options are 'A book about the year you were born', 'A letter to my child about our first year together', and 'Stories from grandma/grandpa'. Our Solo Mode walks you through any of these with age-appropriate question prompts.",
+    q: "How long does it take?",
+    a: "The question flow takes most people 5–10 minutes. AI generates the full manuscript in under 90 seconds. From first click to downloadable PDF — typically under 15 minutes. Upload & Polish is slightly longer (3–5 min) depending on document length.",
   },
   {
-    q: "Do I need to write anything myself?",
-    a: "No writing required. You answer questions — some are one sentence, others invite a short paragraph. The AI handles all the prose. If you enjoy writing, you can edit the output; if not, you don't have to touch a word.",
+    q: "Is my story private?",
+    a: "Yes. Your answers and generated books are private to your account. We do not use your personal stories to train AI models, and we never share your data with third parties. You own your story — completely.",
   },
   {
-    q: "Is there a free plan?",
-    a: "Yes! You can create a full Solo Mode book up to 10 pages and download a PDF for free — no credit card required. Upgrade to Standard ($9.99/book) or Premium ($24.99/book) for longer books, Group Mode, and print-ready formats.",
+    q: "Is there a free option?",
+    a: "Yes! The Single Book plan is just $9.99 one-time — and you can preview your AI-generated story before purchasing. Upload & Polish is $14.99 one-time. For unlimited creation, the Family Monthly plan is $12.99/month or $79/year.",
+  },
+  {
+    q: "Can I order a physical printed book?",
+    a: "Yes. Chapters integrates with print-on-demand partners so you can order a real hardcover or softcover. Premium and Annual plans include print-ready bleed margins, making your book press-ready. Delivery times vary by printer.",
   },
 ];
 
 const FAQ: React.FC = () => {
   const [open, setOpen] = useState<number | null>(0);
-
   const toggle = (i: number) => setOpen(o => o === i ? null : i);
 
   return (
@@ -63,7 +63,7 @@ const FAQ: React.FC = () => {
             Questions, <span className="italic">answered.</span>
           </h2>
           <p className="mt-4 text-lg text-[#0F1B2D]/60">
-            Everything you need to know about creating your book on ChaptersBook.com
+            Everything you need to know about creating meaningful books on ChaptersBook.com
           </p>
         </div>
 
@@ -78,9 +78,7 @@ const FAQ: React.FC = () => {
                 onClick={() => toggle(i)}
               >
                 <span className="font-semibold text-[#0F1B2D] text-base leading-snug">{item.q}</span>
-                <ChevronDown
-                  className={`w-5 h-5 flex-shrink-0 mt-0.5 text-[#0F1B2D]/50 transition-transform ${open === i ? 'rotate-180' : ''}`}
-                />
+                <ChevronDown className={`w-5 h-5 flex-shrink-0 mt-0.5 text-[#0F1B2D]/50 transition-transform ${open === i ? 'rotate-180' : ''}`} />
               </button>
               {open === i && (
                 <div className="px-6 pb-6">

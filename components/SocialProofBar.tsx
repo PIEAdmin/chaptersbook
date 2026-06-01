@@ -1,27 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { BookOpen, Star, Globe, Clock } from 'lucide-react';
-
-interface StatItem {
-  icon: React.ReactNode;
-  value: string;
-  label: string;
-}
+import { BookOpen, Star, Globe, Gift } from 'lucide-react';
 
 const SocialProofBar: React.FC = () => {
-  const [books, setBooks] = useState(12847);
+  const [books, setBooks] = useState(14238);
 
   useEffect(() => {
     const t = setInterval(() => {
       setBooks(b => b + Math.floor(Math.random() * 3));
-    }, 8000);
+    }, 7000);
     return () => clearInterval(t);
   }, []);
 
-  const stats: StatItem[] = [
-    { icon: <BookOpen className="w-5 h-5" />, value: books.toLocaleString() + '+', label: 'books created' },
+  const stats = [
+    { icon: <BookOpen className="w-5 h-5" />, value: books.toLocaleString() + '+', label: 'stories created' },
     { icon: <Star className="w-5 h-5" />, value: '4.9 / 5', label: 'average rating' },
     { icon: <Globe className="w-5 h-5" />, value: '80+', label: 'countries' },
-    { icon: <Clock className="w-5 h-5" />, value: '< 90 sec', label: 'avg. generation time' },
+    { icon: <Gift className="w-5 h-5" />, value: '20+', label: 'gift occasions' },
   ];
 
   return (

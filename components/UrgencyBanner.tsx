@@ -3,12 +3,12 @@ import { X, Zap } from 'lucide-react';
 
 const UrgencyBanner: React.FC = () => {
   const [visible, setVisible] = useState(true);
-  const [spots, setSpots] = useState(347);
+  const [spots, setSpots] = useState(312);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setSpots(s => s > 300 ? s - 1 : s);
-    }, 45000);
+      setSpots(s => s > 280 ? s - 1 : s);
+    }, 50000);
     return () => clearInterval(interval);
   }, []);
 
@@ -19,8 +19,9 @@ const UrgencyBanner: React.FC = () => {
       <div className="flex items-center justify-center gap-2 flex-wrap">
         <Zap className="w-3.5 h-3.5 text-[#D4A847] flex-shrink-0" />
         <span>
-          🎉 <strong>Launch Week Special:</strong> 50% off Standard &amp; Premium —
+          🎉 <strong>Launch Week Special:</strong> 50% off all plans —
           only <strong className="text-[#D4A847]">{spots} spots</strong> remaining at this price.
+          Retirement, baby showers, birthdays &amp; more.
         </span>
         <a
           href="#pricing"
