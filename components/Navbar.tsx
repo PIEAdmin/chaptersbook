@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 interface NavbarProps {
   onGetStarted: () => void;
@@ -42,12 +42,13 @@ const Navbar: React.FC<NavbarProps> = ({ onGetStarted }) => {
         <a
           href="#top"
           onClick={(e) => { e.preventDefault(); scrollTo('#top'); }}
-          className="flex items-center gap-2.5 group"
+          className="flex items-center gap-2 group"
         >
-          <div className="w-10 h-10 rounded-lg bg-[#0F1B2D] flex items-center justify-center group-hover:bg-[#8B2635] transition-colors">
-            <BookOpen className="w-5 h-5 text-[#D4A847]" />
-          </div>
-          <span className="font-display text-2xl font-bold text-[#0F1B2D] tracking-tight">Chapters</span>
+          <img
+            src="/logo-primary.png"
+            alt="Chapters"
+            className="h-12 w-auto object-contain transition-opacity group-hover:opacity-90"
+          />
         </a>
 
         <div className="hidden lg:flex items-center gap-8">

@@ -85,8 +85,8 @@ const Hero: React.FC<HeroProps> = ({ onStartSolo, onStartGroup, onUpload }) => {
         <div className="relative">
           <div className="relative animate-float-slow">
             <img
-              src="https://d64gsuwffb70l.cloudfront.net/6a063b22925759ea0a87c270_1778793407022_56eddcbb.jpg"
-              alt="Open book with elegant typography"
+              src="/hero-bg.png"
+              alt="Chapters — personalized stories for life's milestone moments"
               className="w-full rounded-2xl book-shadow object-cover aspect-[16/12]"
             />
             <div className="absolute -top-6 -left-4 md:-left-8 bg-white rounded-xl px-4 py-3 shadow-xl border border-[#0F1B2D]/5 max-w-[210px]">
