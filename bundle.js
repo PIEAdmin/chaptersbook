@@ -584,3 +584,236 @@ lucide-react/dist/esm/lucide-react.js:
    * See the LICENSE file in the root directory of this source tree.
    *)
 */
+
+// ─── CHAPTERSBOOK AUTH SYSTEM — Phase 1 ──────────────────────────────────────
+(function(){
+  var SUPA_URL='https://lqnefcvdrdvpsqefrpml.supabase.co';
+  var SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxxbmVmY3ZkcmR2cHNxZWZycG1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3OTg5NDYsImV4cCI6MjA5NjM3NDk0Nn0.IXcqqeZo4Kxk5lwY1KMy_ynzv1I2bc4uxE7-_ANqg1w';
+
+  var supaClient=null, currentUser=null, ddOpen=false;
+
+  // ── STYLES ───────────────────────────────────────────────────────────────────
+  var style=document.createElement('style');
+  style.textContent=`
+    #cb-auth-btn{position:fixed;top:14px;right:175px;z-index:9998;background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(124,58,237,.35);}
+    #cb-auth-btn:hover{background:#6d28d9;}
+    #cb-user-chip{position:fixed;top:14px;right:175px;z-index:9998;background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(124,58,237,.35);}
+    #cb-user-chip:hover{background:#6d28d9;}
+    #cb-user-dd{position:fixed;top:50px;right:175px;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.14);z-index:9999;min-width:210px;display:none;}
+    #cb-user-dd.open{display:block;}
+    #cb-user-dd .dd-email{padding:12px 16px 8px;font-size:12px;color:#9ca3af;border-bottom:1px solid #f3f4f6;word-break:break-all;}
+    #cb-user-dd .dd-item{padding:11px 16px;font-size:14px;color:#374151;cursor:pointer;display:flex;align-items:center;gap:8px;}
+    #cb-user-dd .dd-item:hover{background:#f9fafb;}
+    #cb-user-dd .dd-item.danger{color:#dc2626;}
+    #cb-user-dd .dd-divider{height:1px;background:#f3f4f6;margin:4px 0;}
+    #cb-auth-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10001;align-items:center;justify-content:center;}
+    #cb-auth-overlay.open{display:flex;}
+    #cb-auth-modal{background:#fff;border-radius:16px;padding:32px;width:100%;max-width:420px;margin:16px;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+    #cb-auth-modal h2{font-size:22px;font-weight:700;color:#1a1a2e;margin:0 0 6px;}
+    #cb-auth-modal p.sub{color:#6b7280;margin:0 0 20px;font-size:14px;}
+    #cb-auth-modal input{width:100%;padding:11px 13px;border:1.5px solid #d1d5db;border-radius:8px;font-size:15px;margin-bottom:11px;outline:none;box-sizing:border-box;font-family:inherit;}
+    #cb-auth-modal input:focus{border-color:#7c3aed;box-shadow:0 0 0 3px rgba(124,58,237,.1);}
+    #cb-auth-modal .btn-primary{width:100%;background:#7c3aed;color:#fff;border:none;border-radius:8px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px;font-family:inherit;}
+    #cb-auth-modal .btn-primary:hover{background:#6d28d9;}
+    #cb-auth-modal .btn-primary:disabled{opacity:.6;cursor:not-allowed;}
+    #cb-auth-modal .toggle-link{text-align:center;margin-top:14px;font-size:13px;color:#6b7280;}
+    #cb-auth-modal .toggle-link span{color:#7c3aed;cursor:pointer;font-weight:600;}
+    #cb-auth-modal .toggle-link span:hover{text-decoration:underline;}
+    #cb-auth-modal .msg{padding:10px 13px;border-radius:8px;font-size:13px;margin-bottom:11px;display:none;}
+    #cb-auth-modal .msg.err{background:#fef2f2;color:#b91c1c;}
+    #cb-auth-modal .msg.ok{background:#f0fdf4;color:#166534;}
+    #cb-auth-close{float:right;background:none;border:none;font-size:20px;cursor:pointer;color:#9ca3af;line-height:1;}
+    #cb-auth-close:hover{color:#374151;}
+    .cb-sync-badge{display:inline-block;background:#10b981;color:#fff;font-size:11px;padding:2px 7px;border-radius:10px;margin-left:6px;font-weight:600;}
+  `;
+  document.head.appendChild(style);
+
+  // ── MODAL ────────────────────────────────────────────────────────────────────
+  var overlay=document.createElement('div');
+  overlay.id='cb-auth-overlay';
+  overlay.innerHTML=`
+    <div id="cb-auth-modal">
+      <button id="cb-auth-close">✕</button>
+      <h2 id="cb-modal-title">Welcome back</h2>
+      <p class="sub" id="cb-modal-sub">Sign in to save your stories to the cloud</p>
+      <div class="msg err" id="cb-msg-err"></div>
+      <div class="msg ok" id="cb-msg-ok"></div>
+      <input type="email" id="cb-email" placeholder="Email address" autocomplete="email"/>
+      <input type="password" id="cb-password" placeholder="Password (min 6 characters)" autocomplete="current-password"/>
+      <button class="btn-primary" id="cb-auth-submit">Sign In</button>
+      <div class="toggle-link" id="cb-auth-toggle">
+        Don't have an account? <span id="cb-toggle-span">Create one free</span>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+
+  var isSignUp=false;
+
+  function showErr(m){var e=document.getElementById('cb-msg-err');e.textContent=m;e.style.display='block';document.getElementById('cb-msg-ok').style.display='none';}
+  function showOk(m){var e=document.getElementById('cb-msg-ok');e.textContent=m;e.style.display='block';document.getElementById('cb-msg-err').style.display='none';}
+  function clearMsgs(){document.getElementById('cb-msg-err').style.display='none';document.getElementById('cb-msg-ok').style.display='none';}
+
+  function setMode(signup){
+    isSignUp=signup;
+    document.getElementById('cb-modal-title').textContent=signup?'Create your account':'Welcome back';
+    document.getElementById('cb-modal-sub').textContent=signup?'Save stories to the cloud & access anywhere':'Sign in to access your saved stories';
+    document.getElementById('cb-auth-submit').textContent=signup?'Create Account':'Sign In';
+    var toggle=document.getElementById('cb-auth-toggle');
+    toggle.innerHTML=signup
+      ?'Already have an account? <span id="cb-toggle-span">Sign in</span>'
+      :"Don't have an account? <span id=\"cb-toggle-span\">Create one free</span>";
+    document.getElementById('cb-toggle-span').onclick=function(){clearMsgs();setMode(!signup);};
+    clearMsgs();
+  }
+
+  function openModal(){overlay.classList.add('open');clearMsgs();document.getElementById('cb-email').value='';document.getElementById('cb-password').value='';}
+  function closeModal(){overlay.classList.remove('open');}
+
+  document.getElementById('cb-auth-close').onclick=closeModal;
+  overlay.onclick=function(e){if(e.target===overlay)closeModal();};
+  document.getElementById('cb-toggle-span').onclick=function(){clearMsgs();setMode(!isSignUp);};
+
+  document.getElementById('cb-auth-submit').onclick=async function(){
+    if(!supaClient)return;
+    var email=document.getElementById('cb-email').value.trim();
+    var pass=document.getElementById('cb-password').value;
+    if(!email||!pass){showErr('Please enter your email and password.');return;}
+    var btn=document.getElementById('cb-auth-submit');
+    btn.disabled=true; btn.textContent=isSignUp?'Creating...':'Signing in...';
+    clearMsgs();
+    try{
+      if(isSignUp){
+        var r=await supaClient.auth.signUp({email:email,password:pass});
+        if(r.error)throw r.error;
+        showOk('Account created! Check your email to confirm your account, then sign in.');
+        setMode(false);
+      } else {
+        var r=await supaClient.auth.signInWithPassword({email:email,password:pass});
+        if(r.error)throw r.error;
+        currentUser=r.data.user;
+        closeModal();
+        renderUserUI();
+        await syncBooks();
+      }
+    }catch(err){showErr(err.message||'Something went wrong. Please try again.');}
+    finally{btn.disabled=false; btn.textContent=isSignUp?'Create Account':'Sign In';}
+  };
+
+  // ── USER UI ──────────────────────────────────────────────────────────────────
+  function renderUserUI(){
+    ['cb-auth-btn','cb-user-chip','cb-user-dd'].forEach(function(id){var el=document.getElementById(id);if(el)el.remove();});
+    if(!currentUser){
+      var btn=document.createElement('button');
+      btn.id='cb-auth-btn';
+      btn.innerHTML='👤 Sign In';
+      btn.onclick=openModal;
+      document.body.appendChild(btn);
+    } else {
+      var name=currentUser.email.split('@')[0];
+      var chip=document.createElement('button');
+      chip.id='cb-user-chip';
+      chip.innerHTML='👤 '+name;
+      document.body.appendChild(chip);
+
+      var dd=document.createElement('div');
+      dd.id='cb-user-dd';
+      dd.innerHTML='<div class="dd-email">'+currentUser.email+'</div>'
+        +'<div class="dd-item" id="cb-dd-books">📚 My Saved Books</div>'
+        +'<div class="dd-divider"></div>'
+        +'<div class="dd-item danger" id="cb-dd-out">Sign Out</div>';
+      document.body.appendChild(dd);
+
+      chip.onclick=function(e){e.stopPropagation();dd.classList.toggle('open');};
+      document.addEventListener('click',function(){dd.classList.remove('open');});
+
+      document.getElementById('cb-dd-books').onclick=function(){
+        dd.classList.remove('open');
+        var libBtn=document.getElementById('cb-my-books-btn');
+        if(libBtn)libBtn.click();
+      };
+      document.getElementById('cb-dd-out').onclick=async function(){
+        await supaClient.auth.signOut();
+        currentUser=null;
+        dd.remove();
+        renderUserUI();
+        toast('You have been signed out.');
+      };
+    }
+  }
+
+  // ── CLOUD SYNC ────────────────────────────────────────────────────────────────
+  async function syncBooks(){
+    if(!supaClient||!currentUser)return;
+    try{
+      var res=await supaClient.from('books').select('*').order('created_at',{ascending:false});
+      if(res.error){console.warn('Supabase load error:',res.error);return;}
+      var cloudBooks=(res.data||[]).map(function(b){
+        return {id:b.id,title:b.title,recipient:b.recipient,occasion:b.occasion,content:b.content,savedAt:b.created_at,fromCloud:true};
+      });
+      var local=JSON.parse(localStorage.getItem('chaptersbook_library')||'[]');
+      var cloudIds=new Set(cloudBooks.map(function(b){return b.id;}));
+      var localOnly=local.filter(function(b){return !cloudIds.has(b.id);});
+      var merged=cloudBooks.concat(localOnly);
+      localStorage.setItem('chaptersbook_library',JSON.stringify(merged));
+      // Upload local-only books to cloud
+      for(var i=0;i<localOnly.length;i++){
+        var bk=localOnly[i];
+        await supaClient.from('books').upsert({
+          id:bk.id, user_id:currentUser.id,
+          title:bk.title||'Untitled', recipient:bk.recipient||'',
+          occasion:bk.occasion||'birthday',
+          content:bk.content||bk.book&&bk.book.story||JSON.stringify(bk.book)||'',
+          status:'complete'
+        });
+      }
+      if(typeof window.__refreshLibrary==='function')window.__refreshLibrary();
+      window.dispatchEvent(new CustomEvent('chaptersbook_library_updated'));
+      toast('📚 '+(merged.length)+' book'+(merged.length!==1?'s':'')+' synced to your library!');
+    }catch(e){console.warn('Sync error:',e);}
+  }
+
+  // Save hook — listen for library updates and persist to cloud
+  window.addEventListener('chaptersbook_library_updated',async function(){
+    if(!supaClient||!currentUser)return;
+    var books=JSON.parse(localStorage.getItem('chaptersbook_library')||'[]');
+    var latest=books[0];
+    if(!latest||latest.fromCloud)return;
+    try{
+      await supaClient.from('books').upsert({
+        id:latest.id, user_id:currentUser.id,
+        title:latest.title||'Untitled', recipient:latest.recipient||'',
+        occasion:latest.occasion||'birthday',
+        content:latest.content||latest.book&&latest.book.story||JSON.stringify(latest.book)||'',
+        status:'complete'
+      });
+    }catch(e){console.warn('Auto-save to cloud error:',e);}
+  });
+
+  // ── TOAST ────────────────────────────────────────────────────────────────────
+  function toast(msg){
+    var t=document.createElement('div');
+    t.style.cssText='position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#7c3aed;color:#fff;padding:11px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:99999;box-shadow:0 4px 16px rgba(0,0,0,.2);white-space:nowrap;';
+    t.textContent=msg;
+    document.body.appendChild(t);
+    setTimeout(function(){t.style.opacity='0';t.style.transition='opacity .4s';setTimeout(function(){t.remove();},400);},3200);
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────────────────
+  function waitForSupa(tries){
+    if(window.supabase&&window.supabase.createClient){
+      supaClient=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+      supaClient.auth.getSession().then(function(r){
+        currentUser=r.data&&r.data.session?r.data.session.user:null;
+        renderUserUI();
+        if(currentUser)syncBooks();
+      });
+      supaClient.auth.onAuthStateChange(function(_ev,sess){
+        currentUser=sess?sess.user:null;
+        renderUserUI();
+      });
+    } else if(tries<30){
+      setTimeout(function(){waitForSupa(tries+1);},300);
+    }
+  }
+  waitForSupa(0);
+})();
